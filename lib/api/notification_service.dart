@@ -30,13 +30,10 @@ class NotificationService extends ChangeNotifier {
   }
 
   Future instantNotification() async {
-    var android = AndroidNotificationDetails(
-      "id",
-      "channel",
-      "description",
-      importance: Importance.max,
-      priority: Priority.max,
-    );
+    var android = AndroidNotificationDetails("id", "channel", "description",
+        importance: Importance.max,
+        priority: Priority.max,
+        enableVibration: true);
 
     var platform = new NotificationDetails(android: android);
 

@@ -24,7 +24,7 @@ class _ForegroundViewState extends State<ForegroundView> {
     Provider.of<NotificationService>(context, listen: false).initialize();
     Stream<DatabaseEvent> stream = ref.child('data').onValue;
     stream.listen((event) {
-      print(event.snapshot.value);
+      // print(event.snapshot.value);
     });
     super.initState();
   }
@@ -73,7 +73,7 @@ class _ForegroundViewState extends State<ForegroundView> {
           child: FirebaseDatabaseQueryBuilder(
             query: ref,
             builder: (context, snapshot, _) {
-              print(snapshot.docs);
+              // print(snapshot.docs);
               if (snapshot.hasData) {
                 status = snapshot.docs[0].child('status').value.toString();
                 humidity = snapshot.docs[0].child('humidity').value.toString();
