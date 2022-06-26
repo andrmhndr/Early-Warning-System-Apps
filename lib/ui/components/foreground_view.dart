@@ -1,4 +1,5 @@
 import 'package:early_warning_system/adapter/helper.dart';
+import 'package:early_warning_system/adapter/icon_helper.dart';
 import 'package:early_warning_system/api/notification_service.dart';
 import 'package:early_warning_system/ui/components/data_view.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/database.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ForegroundView extends StatefulWidget {
   const ForegroundView({
@@ -18,7 +20,8 @@ class ForegroundView extends StatefulWidget {
 
 class _ForegroundViewState extends State<ForegroundView> {
   final ref = FirebaseDatabase.instance.ref();
-
+  final Uri _url = Uri.parse(
+      'https://twitter.com/BPPTKG?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor');
   @override
   void initState() {
     Provider.of<NotificationService>(context, listen: false).initialize();
@@ -27,6 +30,10 @@ class _ForegroundViewState extends State<ForegroundView> {
       // print(event.snapshot.value);
     });
     super.initState();
+  }
+
+  void _launchUrl() async {
+    if (!await launchUrl(_url)) throw 'Could not launch $_url';
   }
 
   @override
@@ -58,6 +65,7 @@ class _ForegroundViewState extends State<ForegroundView> {
         Container(
           height: 450,
           padding: EdgeInsets.only(bottom: 60),
+          margin: EdgeInsets.only(bottom: 20),
           width: size.width * 0.9,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -84,9 +92,21 @@ class _ForegroundViewState extends State<ForegroundView> {
               }
               return Consumer<NotificationService>(
                 builder: (context, model, _) {
-                  if (status == 'Berbahaya') {
-                    model.instantNotification();
+                  // if (status == 'Berbahaya') {
+                  //   //model.instantNotification();
+                  // }
+                  Color statusColor = Colors.grey;
+
+                  if (status == 'Normal') {
+                    statusColor = normal;
+                  } else if (status == 'Waspada') {
+                    statusColor = waspada;
+                  } else if (status == 'Siaga') {
+                    statusColor = siaga;
+                  } else if (status == 'Awas') {
+                    statusColor = awas;
                   }
+
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -100,7 +120,7 @@ class _ForegroundViewState extends State<ForegroundView> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 15, horizontal: 40),
                               decoration: BoxDecoration(
-                                color: kPrimaryColor,
+                                color: statusColor,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(40)),
                               ),
@@ -136,6 +156,40 @@ class _ForegroundViewState extends State<ForegroundView> {
                 },
               );
             },
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: kPrimaryColor,
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          width: size.width * 0.4,
+          height: size.height * 0.075,
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            child: InkWell(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              onTap: () {
+                _launchUrl();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image(image: AssetImage(iconBpptkg)),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    'BPPTKG',
+                    style: GoogleFonts.inter(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
           ),
         )
       ],
