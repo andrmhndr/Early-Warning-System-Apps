@@ -26,6 +26,21 @@ class DataView extends StatelessWidget {
     }
   }
 
+  satuan(String name) {
+    if (name == 'Quake') {
+      return '';
+    }
+    if (name == 'Humidity') {
+      return '%';
+    }
+    if (name == 'Smoke') {
+      return 'ppm';
+    }
+    if (name == 'Temperature') {
+      return 'C';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,7 +66,7 @@ class DataView extends StatelessWidget {
               ),
             ],
           ),
-          Text('$value'),
+          Text('$value ${satuan(title)}'),
         ],
       ),
     );
